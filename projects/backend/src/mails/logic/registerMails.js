@@ -11,7 +11,7 @@ const config = {
 const conn = mysql.createPool(config)
 
 export const registerMails = async ({ recipient, subject, content }) => {
-    const query = 'INSERT INTO email_sent (recipient, subject, content) VALUES (?, ?, ?)';
+    const query = 'INSERT INTO emails_sent (recipient, subject, content) VALUES (?, ?, ?)';
     const [isSent] = await conn.query(query, [recipient, subject, content]);
 
     return isSent ? true : false;
