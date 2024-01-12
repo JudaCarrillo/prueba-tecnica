@@ -1,6 +1,6 @@
 import Hapi from '@hapi/hapi';
 import { createTokenRoutes } from './routes/token.route.js';
-import { TokenModel } from './models/local-file-system/token.model.js';
+import { TokenModel } from './models/mysql/token.model.js';
 
 const init = async () => {
 	const hapi = Hapi;

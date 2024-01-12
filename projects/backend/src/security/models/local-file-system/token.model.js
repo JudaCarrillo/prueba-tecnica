@@ -13,7 +13,6 @@ export class TokenModel {
 
     static async insertToken({ token }) {
         tokens.push(token);
-        console.log(tokens)
         return token;
     }
 

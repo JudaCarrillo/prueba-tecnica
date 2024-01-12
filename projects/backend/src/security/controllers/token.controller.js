@@ -6,13 +6,14 @@ export class TokenController {
     generate = async (request, h) => {
         const objToken = await this.tokenModel.generate();
         const { token } = objToken;
-        await this.tokenModel.insertToken({ token: objToken });
-        return h.response(token).code(200);
+        await this.tokenModel.insertToken({ newToken: objToken });
+        return h.response(token);
     }
 
     validate = async (request, h) => {
         const idToken = request.params.id;
-        const label = await this.tokenModel.validate({ id: idToken });
+        const isValid = await this.tokenModel.validate({ id: idToken });
+        const label = isValid ? 'Valid token' : 'Invalid token';
         return h.response(label);
 
     }
@@ -21,8 +22,9 @@ export class TokenController {
         const idToken = request.params.id;
         const newToken = request.payload.token;
 
-        const updatedToken = await this.tokenModel.update({ id: idToken, newToken: newToken });
+        const isValid = await this.tokenModel.update({ id: idToken, newToken: newToken });
+        const label = isValid ? 'Successfully updated' : 'Not updated successfully';
 
-        return h.response(updatedToken);
+        return h.response(label);
     }
 }
