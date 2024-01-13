@@ -5,7 +5,7 @@ import { Producer } from './rabbitmq/producer.js';
 const init = async () => {
     const hapi = Hapi;
     const server = hapi.Server({
-        port: process.env.PORT ?? 3000,
+        port: process.env.PORT ?? 3001,
         host: 'localhost'
     });
 

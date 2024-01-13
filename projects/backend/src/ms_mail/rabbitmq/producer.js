@@ -19,13 +19,11 @@ export class Producer {
 
     async connect() {
         this.conn = await this.amqp.connect(this.rabbitSettings);
-        console.log('conexion')
     }
 
     async createChannel() {
         if (!this.conn) await this.connect();
         this.chl = await this.conn.createChannel();
-        console.log('canal');
     }
 
     async closeConnection() {

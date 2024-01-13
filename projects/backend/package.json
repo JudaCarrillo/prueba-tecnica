@@ -7,11 +7,12 @@
   "scripts": {
     "start": "node src/server.js",
     "lint": "eslint .",
-    "dev-security": "nodemon src/security/server.js",
-    "dev-mails": "nodemon src/mails/server.js"
+    "dev-security": "nodemon src/ms_security/server.js",
+    "dev-mail": "nodemon src/ms_mail/server.js",
+    "dev-client": "nodemon src/ms_client/server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Judá Carrillo",
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "21.3.2",
