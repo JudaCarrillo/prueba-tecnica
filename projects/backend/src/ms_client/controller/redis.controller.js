@@ -7,22 +7,15 @@ export class RedisController {
         RedisModel.connection();
     }
 
-    async init() {
-        this.redisModel = new RedisModel();
-        await this.redisModel.connection();
-    }
-
-    async saveValues(request, h) {
-        const key = request.payload.key
-        const value = request.payload.value
+    static async saveValues({ key, value }) {
+        // validaciones...
         const isValid = await RedisModel.setValue({ key, value });
         const label = isValid === 'OK' ? 'Clave establecida' : 'Clave no establecida'
-        return h.response(label)
+        return label
     }
 
-    async getValues(request, h) {
-        const key = request.params.key
+    static async getValues({ key }) {
         const value = await RedisModel.getValue({ key })
-        if (value) return h.response(value)
+        if (value) return value
     }
 }

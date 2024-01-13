@@ -42,7 +42,7 @@ export class Producer {
                 dateTime: new Date()
             }
 
-            await this.chl.assertQueue(queue)
+            await this.chl.assertQueue(queue) 
             await this.chl.sendToQueue(queue, Buffer.from(JSON.stringify(logDetails)))
 
 

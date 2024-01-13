@@ -6,7 +6,14 @@ const init = async () => {
     const hapi = Hapi;
     const server = hapi.Server({
         port: process.env.PORT ?? 3001,
-        host: 'localhost'
+        host: 'localhost',
+        "routes": {
+            "cors": {
+                "origin": ["http://localhost:3003"],
+                "headers": ["Accept", "Content-Type"],
+                "additionalHeaders": ['X-Requested-With']
+            },
+        }
     });
 
     const producer = new Producer()

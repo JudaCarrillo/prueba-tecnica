@@ -1,5 +1,5 @@
-import { RedisController } from './controller/redis.controller.js'
 import Hapi from '@hapi/hapi';
+import { createClientRoutes } from './routes/client.routes.js';
 
 const init = async () => {
     const hapi = Hapi;
@@ -8,19 +8,7 @@ const init = async () => {
         host: 'localhost'
     });
 
-    const redisController = new RedisController()
-
-    server.route({
-        method: 'POST',
-        path: '/send-values',
-        handler: redisController.saveValues
-    })
-
-    server.route({
-        method: 'GET',
-        path: '/get-values/{key}',
-        handler: redisController.getValues
-    })
+    server.route(createClientRoutes())
 
     await server.start();
     console.log('Server running on:  %s', server.info.uri);
