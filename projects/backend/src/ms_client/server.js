@@ -1,5 +1,16 @@
 import Hapi from '@hapi/hapi';
+import inert from '@hapi/inert';
+import vision from '@hapi/vision';
+import hapiswagger from 'hapi-swagger';
 import { createClientRoutes } from './routes/client.routes.js';
+
+const swaggerOptions = {
+    info: {
+        title: 'Client API Documentation',
+        version: '1.0',
+    },
+}
+
 
 const init = async () => {
     const hapi = Hapi;
@@ -15,10 +26,24 @@ const init = async () => {
         }
     });
 
+    await server.register([
+        inert,
+        vision,
+        {
+            plugin: hapiswagger,
+            options: swaggerOptions
+        }
+
+    ])
+
     server.route(createClientRoutes())
 
-    await server.start();
-    console.log('Server running on:  %s', server.info.uri);
+    try {
+        await server.start();
+        console.log('Server running at:', server.info.uri);
+    } catch (err) {
+        console.log(err);
+    }
 };
 
 process.on('unhandledRejection', (err) => {

@@ -3,6 +3,16 @@ import { ClientModel } from '../models/client.model.js';
 import { RabbitController } from './rabbit.controller.js';
 import { RedisController } from './redis.controller.js';
 import { TokenController } from './token.controller.js';
+import { validateRegClient } from '../schemes/client.js';
+import bcrypt from 'bcrypt'
+
+
+async function hashPassword(password) {
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    return hashedPassword;
+}
 
 export class ClientController {
 
@@ -12,16 +22,19 @@ export class ClientController {
     clientModel = new ClientModel();
     apiToken = ''
 
-
-
     async registerClient(request, h) {
-        const { email, password, sendEmailValue, idToken } = request.payload;
+        const validationResult = validateRegClient(request.payload)
+
+        if (validationResult.error) {
+            return h.response({ error: 'Invalid parameters.' }).code(400);
+        }
+
+        const { email, password, sendEmailValue, idToken } = validationResult.data;
+        const encryptPassword = await hashPassword(password)
         const uuid = randomUUID();
         let valueParam = 0;
         let isActive = false;
         let labelEmail
-
-        // validaciones ...
 
         const strSendEmail = sendEmailValue ? 'true' : 'false'
 
@@ -41,7 +54,7 @@ export class ClientController {
 
 
         // save on bd
-        const isRegistedClient = await ClientModel.registerClient({ id: uuid, email, password })
+        const isRegistedClient = await ClientModel.registerClient({ id: uuid, email, password: encryptPassword })
         const isRegistedParam = await ClientModel.registerGlobalParameter({ idClient: uuid, sendEmail: valueParam })
 
         const label = isRegistedClient && isRegistedParam ? 'Registered client' : 'Unregistered client'
