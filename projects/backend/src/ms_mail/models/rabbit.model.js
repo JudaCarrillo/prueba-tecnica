@@ -1,9 +1,9 @@
 import amqplib from 'amqplib';
-import { registerMails } from '../logic/registerMails.js';
+import { registerMails } from './mail.model.js';
 
-export class Producer {
+export class RabbitModel {
 
-    rabbitSettings = {
+    static rabbitSettings = {
         protocol: 'amqp',
         hostname: 'localhost',
         port: 5672,
@@ -13,27 +13,23 @@ export class Producer {
         authMechanism: ['PLAIN', 'AMQPLAIN', 'EXTERNAL']
     }
 
-    amqp = amqplib;
-    conn = null;
-    chl = null;
+    static amqp = amqplib;
+    static conn = null;
+    static chl = null;
 
-    async connect() {
-        this.conn = await this.amqp.connect(this.rabbitSettings);
+    static async connect() {
+        RabbitModel.conn = await RabbitModel.amqp.connect(RabbitModel.rabbitSettings);
     }
 
-    async createChannel() {
-        if (!this.conn) await this.connect();
-        this.chl = await this.conn.createChannel();
+    static async createChannel() {
+        if (!RabbitModel.conn) await RabbitModel.connect();
+        RabbitModel.chl = await this.conn.createChannel();
     }
 
-    async closeConnection() {
-        if (this.conn) await this.conn.close();
-    }
-
-    async publishMessage({ recipient, subject, message }) {
+    static async publishMessage({ recipient, subject, message }) {
         const queue = 'mails'
         try {
-            if (!this.chl) await this.createChannel();
+            if (!RabbitModel.chl) await RabbitModel.createChannel();
 
             const logDetails = {
                 recipient: recipient,
@@ -42,8 +38,8 @@ export class Producer {
                 dateTime: new Date()
             }
 
-            await this.chl.assertQueue(queue) 
-            await this.chl.sendToQueue(queue, Buffer.from(JSON.stringify(logDetails)))
+            await RabbitModel.chl.assertQueue(queue)
+            await RabbitModel.chl.sendToQueue(queue, Buffer.from(JSON.stringify(logDetails)))
 
 
             await registerMails({

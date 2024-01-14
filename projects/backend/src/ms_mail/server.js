@@ -1,6 +1,15 @@
 import Hapi from '@hapi/hapi';
-import { MailsController } from './controllers/mails.controller.js';
-import { Producer } from './rabbitmq/producer.js';
+import inert from '@hapi/inert';
+import vision from '@hapi/vision';
+import hapiswagger from 'hapi-swagger';
+import { createMailRoutes } from './routes/mail.ruote.js'
+
+const swaggerOptions = {
+    info: {
+        title: 'Token API Documentation',
+        version: '1.0',
+    },
+}
 
 const init = async () => {
     const hapi = Hapi;
@@ -16,19 +25,23 @@ const init = async () => {
         }
     });
 
-    const producer = new Producer()
-    await producer.connect()
-    await producer.createChannel()
-    const controller = new MailsController()
+    await server.register([
+        inert,
+        vision,
+        {
+            plugin: hapiswagger,
+            options: swaggerOptions
+        }
+    ])
 
-    server.route({
-        method: 'POST',
-        path: '/sendLog',
-        handler: controller.sentMail
-    })
+    server.route(createMailRoutes())
 
-    await server.start();
-    console.log('Server running on:  %s', server.info.uri);
+    try {
+        await server.start();
+        console.log('Server running at:', server.info.uri);
+    } catch (err) {
+        console.log(err);
+    }
 };
 
 process.on('unhandledRejection', (err) => {

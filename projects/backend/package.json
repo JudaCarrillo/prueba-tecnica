@@ -5,7 +5,6 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/server.js",
     "lint": "eslint .",
     "dev-security": "nodemon src/ms_security/server.js",
     "dev-mail": "nodemon src/ms_mail/server.js",
