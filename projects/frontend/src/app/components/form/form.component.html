@@ -1,0 +1,101 @@
+<div
+  class="container d-flex flex-column justify-content-center align-items-center"
+>
+  <h1>Sign Up</h1>
+
+  <form
+    [formGroup]="signUpForm"
+    class="row g-2 d-flex justify-content-center needs-validation"
+    novalidate
+    (submit)="submit($event)"
+  >
+    <div class="mb-3 d-flex justify-content-center">
+      <div>
+        <input
+          id="token"
+          type="text"
+          class="form-control text-center"
+          formControlName="token"
+          [ngClass]="{
+            'is-invalid':
+              hasErrors('token', 'required') ||
+              hasErrors('token', 'minlength') ||
+              hasErrors('token', 'maxlength')
+          }"
+        />
+        @if (hasErrors('token', 'required')) {
+        <span class="text-danger">You have to complete this field</span>
+        } @else if (hasErrors('token', 'minlength')|| hasErrors('token',
+        'maxlength')) {
+        <span class="text-danger">You have to write up to 8 characters.</span>
+        }
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        placeholder="name@example.com"
+        formControlName="email"
+        [ngClass]="{
+          'is-invalid':
+            hasErrors('email', 'required') || hasErrors('email', 'email')
+        }"
+      />
+      @if (hasErrors('email', 'required')) {
+      <span class="text-danger">You have to complete this field</span>
+      } @else if (hasErrors('email', 'email')) {
+      <span class="text-danger">Invalid email format</span>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        formControlName="password"
+        [ngClass]="{
+          'is-invalid':
+            hasErrors('password', 'required') ||
+            hasErrors('password', 'minlength')
+        }"
+      />
+      @if (hasErrors('password', 'required')) {
+      <span class="text-danger">You have to complete this field</span>
+      } @else if (hasErrors('password', 'minlength')) {
+      <span class="text-danger">You have to write at least 3 characters</span>
+      }
+    </div>
+
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        value=""
+        id="checkbox"
+        checked
+        formControlName="sendEmail"
+      />
+      <label class="form-check-label" for="checkbox">Send an email</label>
+      @if (hasErrors('sendEmail', 'required')) {
+      <span class="text-danger">You have to complete this field</span>
+      }
+    </div>
+
+    <div class="mb-3 text-center">
+      <button
+        class="btn btn-primary"
+        id="liveToastBtn"
+        [disabled]="signUpForm.invalid"
+        type="submit"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>

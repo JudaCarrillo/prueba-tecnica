@@ -1,0 +1,14 @@
+.container {
+  min-height: 100vh;
+  max-width: 700px;
+}
+
+h1 {
+  margin: 2rem 0;
+}
+
+form {
+  padding: 2rem 2rem;
+  border: 1px solid rgb(91, 91, 91);
+  border-radius: 10px;
+}

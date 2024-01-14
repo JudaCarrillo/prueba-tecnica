@@ -33,7 +33,7 @@ export class TokenController {
                 }
             });
             const isValidated = await response.json()
-            console.log(isValidated)
+            return isValidated
 
         } catch (err) {
             console.error(err);

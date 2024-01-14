@@ -1,15 +1,21 @@
 import Hapi from '@hapi/hapi';
 import { createTokenRoutes } from './routes/token.route.js';
-import { TokenModel } from './models/mysql/token.model.js';
 
 const init = async () => {
 	const hapi = Hapi;
 	const server = hapi.Server({
 		port: process.env.PORT ?? 3000,
-		host: 'localhost'
+		host: 'localhost',
+		"routes": {
+			"cors": {
+				"origin": ["http://localhost:4200"],
+				"headers": ["Accept", "Content-Type"],
+				"additionalHeaders": ['X-Requested-With']
+			},
+		}
 	});
 
-	server.route(createTokenRoutes({ tokenModel: TokenModel }))
+	server.route(createTokenRoutes())
 
 	await server.start();
 	console.log('Server running on:  %s', server.info.uri);

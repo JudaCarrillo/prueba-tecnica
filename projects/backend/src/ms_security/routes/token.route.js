@@ -1,7 +1,7 @@
-import { TokenController } from '../controllers/token.controller.js';
+import { TokenAdapter } from '../adapters/token.adapter.js';
 
-export const createTokenRoutes = ({ tokenModel }) => {
-    const tokenController = new TokenController(tokenModel);
+export const createTokenRoutes = () => {
+    const tokenController = new TokenAdapter();
 
     const tokensRoutes = [
         {
