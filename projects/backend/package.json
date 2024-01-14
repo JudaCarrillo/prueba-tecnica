@@ -16,7 +16,10 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "21.3.2",
+    "@hapi/inert": "^7.1.0",
+    "@hapi/vision": "^7.0.3",
     "amqplib": "0.10.3",
+    "hapi-swagger": "^17.2.0",
     "mysql2": "3.7.0",
     "redis": "4.6.12",
     "zod": "3.22.4"
