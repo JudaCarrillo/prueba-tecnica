@@ -6,10 +6,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/app.js",
-    "start:dev": "nodemon src/app.js"
+    "start:dev": "nodemon src/app.js",
+    "lint": "eslint . --ext js --report-unused-disable-directives --max-warnings 0"
   },
   "keywords": [],
-  "author": "",
+  "author": "Judá Carrillo",
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "21.3.2",

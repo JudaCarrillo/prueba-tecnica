@@ -1,15 +1,17 @@
 import Joi from 'joi';
-import { TokenAdapter } from '../adapters/token.adapter.js';
+import { TokenToMysqlController } from '../Controllers/tokenToMysql.controller.js';
+import { MySQLTokenRepository } from '../../Persistence/token.repository.js';
 
 export const createTokenRoutes = () => {
-    const tokenController = new TokenAdapter();
+    const mysqlRepository = new MySQLTokenRepository();
+    const tokenToMysqlController = new TokenToMysqlController(mysqlRepository);
 
     const tokensRoutes = [
         {
             method: 'GET',
             path: '/generate',
             options: {
-                handler: tokenController.generate,
+                handler: tokenToMysqlController.generate,
                 description: 'Generate token',
                 notes: 'Generates a security token of 8 digits.',
                 tags: ['api'],
@@ -19,7 +21,7 @@ export const createTokenRoutes = () => {
             method: 'GET',
             path: '/validate/{id}',
             options: {
-                handler: tokenController.validate,
+                handler: tokenToMysqlController.validate,
                 description: 'Validate Token',
                 notes: 'Validates the authenticity of a security token.',
                 tags: ['api'],
@@ -32,9 +34,9 @@ export const createTokenRoutes = () => {
         },
         {
             method: 'PATCH',
-            path: '/edit/{id}',
+            path: '/update/{id}',
             options: {
-                handler: tokenController.update,
+                handler: tokenToMysqlController.update,
                 description: 'Edit token',
                 notes: 'Allows the user to edit a security token for testing purposes.',
                 tags: ['api'],
@@ -43,7 +45,7 @@ export const createTokenRoutes = () => {
                         id: Joi.string().required().description('Security token ID to validate'),
                     }),
                     payload: Joi.object({
-                        newTokenValue: Joi.string().required().description('New value for the security token')
+                        tokenValue: Joi.string().required().description('New value for the security token')
                     })
                 }
             }

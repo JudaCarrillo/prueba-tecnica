@@ -5,6 +5,8 @@ export class MailRepository {
         }
     }
 
+    
+
     save(mail) {
         throw new Error('save method must be implemented by subclasses.');
     }

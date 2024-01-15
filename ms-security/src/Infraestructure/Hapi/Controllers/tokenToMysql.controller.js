@@ -1,12 +1,15 @@
-import { TokenModel } from "../models/mysql/token.model.js";
-import { validatePartialToken } from "../schemes/token.js";
+import { validatePartialToken } from '../../../Schemes/token.js';
+import { TokenService } from '../../../Application/token.services.js';
 
-export class TokenAdapter {
-    tokenModel = new TokenModel()
+export class TokenToMysqlController {
+
+    constructor(mysqlRepository) {
+        this.mysqlRepository = mysqlRepository;
+        this.tokenService = new TokenService(this.mysqlRepository)
+    }
 
     generate = async (request, h) => {
-        const newToken = await TokenModel.generate();
-        await TokenModel.insertToken({ newToken });
+        const newToken = await this.tokenService.generateToken();
         return h.response(newToken);
     }
 
@@ -18,7 +21,7 @@ export class TokenAdapter {
         }
 
         const { id } = validationResult.data
-        const isValid = await TokenModel.validate({ id });
+        const isValid = await this.tokenService.validateToken({ idToken: id });
 
         return h.response({ 'Valid token': isValid });
     }
@@ -27,14 +30,14 @@ export class TokenAdapter {
         const paramValidationResult = validatePartialToken(request.params)
         const bodyValidationResult = validatePartialToken(request.payload)
 
-        if (bodyValidationResult.error || paramValidationResult.error) {
+        if (!bodyValidationResult.success || !paramValidationResult.success) {
             return h.response({ error: 'Invalid parameters.' }).code(400);
         }
 
         const { id } = paramValidationResult.data
-        const { token } = bodyValidationResult.data
+        const { tokenValue } = bodyValidationResult.data
 
-        const isUpdated = await TokenModel.update({ id, newToken: token });
+        const isUpdated = await this.tokenService.updateToken({ idToken: id, tokenValue });
         const label = isUpdated ? 'Successfully updated' : 'Not updated successfully';
 
         return h.response({ 'Is updated': label });
