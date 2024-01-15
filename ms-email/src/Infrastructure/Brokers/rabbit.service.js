@@ -1,4 +1,5 @@
 import amqplib from 'amqplib';
+import { envConfigRabbit } from '../Config/config.js';
 
 export class RabbitService {
 
@@ -10,12 +11,12 @@ export class RabbitService {
 
     constructor() {
         this.rabbitSettings = {
-            protocol: 'amqp',
-            hostname: 'localhost',
-            port: 5672,
-            username: 'guest',
-            password: 'guest',
-            vhost: '/',
+            protocol: envConfigRabbit.RABBIT_PROTOCOL,
+            hostname: envConfigRabbit.RABBIT_HOSTNAME,
+            port: envConfigRabbit.RABBIT_PORT,
+            username: envConfigRabbit.RABBIT_USERNAME,
+            password: envConfigRabbit.RABBIT_PASSWORD,
+            vhost: envConfigRabbit.RABBIT_VHOST,
             authMechanism: ['PLAIN', 'AMQPLAIN', 'EXTERNAL']
         };
 
@@ -41,7 +42,7 @@ export class RabbitService {
 
                 const msg = JSON.parse(message.content.toString());
                 this.chl.ack(message)
-                callback(msg)
+                return msg
             });
 
         } catch (error) {

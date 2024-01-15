@@ -1,5 +1,11 @@
 import Hapi from '@hapi/hapi';
-import { RabbitAdapter } from './adapters/emails.adapters.js';
+import dotenv from 'dotenv';
+import { MySQLMailRepository, RabbitService } from './Infrastructure/Brokers/index.js';
+import { RabbitToMysqlController } from './Infrastructure/Controllers/rabbitToMysql.controller.js';
+
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config();
+}
 
 const swaggerOptions = {
     info: {
@@ -8,6 +14,10 @@ const swaggerOptions = {
     },
 }
 
+const rabbitService = new RabbitService();
+const mysqlRepository = new MySQLMailRepository()
+const rabbitToMysqlController = new RabbitToMysqlController(rabbitService, mysqlRepository)
+
 const init = async () => {
     const hapi = Hapi;
     const server = hapi.Server({
@@ -15,10 +25,11 @@ const init = async () => {
         host: 'localhost',
     });
 
+
     try {
         await server.start();
         console.log('Server running at:', server.info.uri);
-        await RabbitAdapter.startConsuming()
+        await rabbitToMysqlController.startListening()
     } catch (err) {
         console.log(err);
     }
