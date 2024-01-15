@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { ClientModel } from '../models/client.model.js';
-import { RabbitController } from './rabbit.controller.js';
+import { EmailAdapter } from './rabbit.controller.js';
 import { RedisController } from './redis.controller.js';
 import { TokenController } from './token.controller.js';
 import { validateRegClient } from '../schemes/client.js';
@@ -16,7 +16,7 @@ async function hashPassword(password) {
 
 export class ClientController {
 
-    rabbitController = new RabbitController()
+    rabbitController = new EmailAdapter()
     redisController = new RedisController();
     tokenController = new TokenController();
     clientModel = new ClientModel();
@@ -59,10 +59,9 @@ export class ClientController {
 
         const label = isRegistedClient && isRegistedParam ? 'Registered client' : 'Unregistered client'
 
-
         if (!isActive) { labelEmail = 'Welcome email was no sent.' }
         else {
-            await RabbitController.getMail({ isActive, recipient: email })
+            await EmailAdapter.sendEmail({ recipient: email })
             labelEmail = 'Welcome email was sent.'
         }
 

@@ -19,3 +19,7 @@ const mailScheme = z.object({
 export function validateMail(input) {
     return mailScheme.safeParse(input);
 }
+
+export function validatePartialEmail(input) {
+    return mailScheme.partial().safeParse(input);
+}

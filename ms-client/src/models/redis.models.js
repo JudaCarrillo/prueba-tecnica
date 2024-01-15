@@ -4,18 +4,12 @@ export class RedisModel {
     client = null
 
     static async connection() {
-        this.client = createClient({
+        this.client = await createClient({
             host: 'redis',
             port: 8001,
-        });
-
-        this.client.on('error', err => console.log('Redis client error:', err));
-
-        this.client.on('connect', () => {
-            console.log('Connected to Redis');
-        });
-
-        this.client.connect()
+        })
+            .on('error', err => console.log('Redis client error:', err))
+            .connect()
     }
 
     static async setValue({ key, value }) {

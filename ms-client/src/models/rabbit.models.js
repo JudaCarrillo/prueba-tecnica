@@ -1,8 +1,6 @@
 import amqplib from 'amqplib';
-import { registerMails } from './mail.model.js';
 
 export class RabbitModel {
-
     static rabbitSettings = {
         protocol: 'amqp',
         hostname: 'localhost',
@@ -12,10 +10,10 @@ export class RabbitModel {
         vhost: '/',
         authMechanism: ['PLAIN', 'AMQPLAIN', 'EXTERNAL']
     }
-
     static amqp = amqplib;
     static conn = null;
     static chl = null;
+    static queue = 'emails';
 
     static async connect() {
         RabbitModel.conn = await RabbitModel.amqp.connect(RabbitModel.rabbitSettings);
@@ -23,11 +21,10 @@ export class RabbitModel {
 
     static async createChannel() {
         if (!RabbitModel.conn) await RabbitModel.connect();
-        RabbitModel.chl = await this.conn.createChannel();
+        RabbitModel.chl = await RabbitModel.conn.createChannel();
     }
 
     static async publishMessage({ recipient, subject, message }) {
-        const queue = 'mails'
         try {
             if (!RabbitModel.chl) await RabbitModel.createChannel();
 
@@ -38,17 +35,10 @@ export class RabbitModel {
                 dateTime: new Date()
             }
 
-            await RabbitModel.chl.assertQueue(queue)
-            await RabbitModel.chl.sendToQueue(queue, Buffer.from(JSON.stringify(logDetails)))
+            await RabbitModel.chl.assertQueue(this.queue)
+            await RabbitModel.chl.sendToQueue(this.queue, Buffer.from(JSON.stringify(logDetails)))
 
-
-            await registerMails({
-                recipient: logDetails.recipient,
-                subject: logDetails.subject,
-                content: logDetails.message
-            });
-
-            console.log(`The message ${message} is sent to queue ${queue}`);
+            console.log(`The message ${message} is sent to queue ${this.queue}`);
         } catch (err) {
             console.error('Error sending log:', err.message);
             throw err;
