@@ -1,4 +1,4 @@
-import { Token } from '../Domain/index.js';
+import { Token } from '../Domain/index.js'
 
 export class TokenService {
     constructor(tokenRepository) {
@@ -8,6 +8,9 @@ export class TokenService {
     async generateToken() {
         const newTokenData = await this.tokenRepository.generate();
         const newToken = new Token(newTokenData.id, newTokenData.token);
+
+        newToken.idToken
+        newToken.token
 
         await this.tokenRepository.save({ newToken });
         return newToken;
@@ -19,8 +22,6 @@ export class TokenService {
     }
 
     async updateToken({ idToken, tokenValue }) {
-        // console.log(idToken, tokenValue)
-
         const isUpdated = await this.tokenRepository.update({ idToken, tokenValue });
         return isUpdated;
     }

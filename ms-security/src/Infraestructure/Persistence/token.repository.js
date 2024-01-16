@@ -41,6 +41,8 @@ export class MySQLTokenRepository extends TokenRepository {
             console.error(err);
         }
 
+        console.log('Token registered successfully')
+
         return token;
     }
 
@@ -54,13 +56,15 @@ export class MySQLTokenRepository extends TokenRepository {
             if (token.length > 0) {
                 const used = token[0].used
                 if (used === 1) {
+                    console.log('Invalid token');
                     return false
                 }
 
-
                 await this.pool.query(queryUpdate, [idToken])
+                console.log('Valid token')
                 return true
             } else {
+                console.log('There is not token')
                 return false
             }
 
@@ -71,16 +75,34 @@ export class MySQLTokenRepository extends TokenRepository {
     }
 
     async update({ idToken, tokenValue }) {
-        const isValid = await this.validate({ idToken });
-        if (!isValid) {
-            return false
+        const querySelect = 'SELECT id_security_token, used FROM Security_Token WHERE id_security_token = ?';
+        const queryUpdate = 'UPDATE Security_Token SET token = ? WHERE id_security_token = ?';
+
+        try {
+            const [token] = await this.pool.query(querySelect, [idToken]);
+
+            if (token.length > 0) {
+                tokenExists = true;
+            } else {
+                console.log('There is not token')
+                return false
+            }
+        } catch (err) {
+            console.error(err)
+            throw err
         }
 
-        const query = 'UPDATE Security_Token SET token = ? WHERE id_security_token = ?';
-        const [updatedToken] = await this.pool.query(query, [tokenValue, idToken]);
-        console.log(idToken, tokenValue);
 
-        const isUpdated = updatedToken.affectedRows > 0 ? true : false
-        return isUpdated
+        try {
+            const [updatedToken] = await this.pool.query(queryUpdate, [tokenValue, idToken]);
+
+            const isUpdated = updatedToken.affectedRows > 0 ? true : false
+            console.log('Token successfully updated')
+            return isUpdated
+
+        } catch (err) {
+            console.error(err)
+            throw err
+        }
     }
 } 

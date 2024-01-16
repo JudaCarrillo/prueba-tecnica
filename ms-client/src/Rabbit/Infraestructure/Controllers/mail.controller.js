@@ -1,23 +1,25 @@
 
-import { RabbitModel } from '../models/rabbit.models.js';
-import { validatePartialEmail } from '../schemes/mail.js';
+import { validatePartialEmail } from '../Schemes/mail.js';
 
-export class EmailAdapter {
+export class EmailController {
 
-    rabbitModel = new RabbitModel()
+    constructor(rabbitService) {
+        this.rabbitService = rabbitService
+    }
 
-    static sendEmail = async ({ recipient }) => {
+    async sendMessage({ recipient }) {
         try {
-
             const validationResult = validatePartialEmail({ recipient });
+
+            if (!validationResult.success) {
+                return { error: validationResult.error }
+            }
+
             const subject = 'Welcome to RabbitMQ'
             const message = `Hi ${recipient}, nice to have you here.`
 
-            if (validationResult.error) {
-                return { error: 'Invalid parameters.' }
-            }
 
-            await RabbitModel.publishMessage({ recipient, subject, message });
+            await this.rabbitService.sendMessage({ recipient, subject, message });
 
             return ('Log sent and registered successfully')
         } catch (error) {

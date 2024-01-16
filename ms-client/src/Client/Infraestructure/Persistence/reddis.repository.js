@@ -1,23 +1,28 @@
-import { createClient } from "redis";
+import { createClient } from 'redis';
+import { envConfigRedis } from '../Config/config.js'
 
-export class RedisModel {
-    client = null
+export class RedisRepository {
+    client;
 
-    static async connection() {
+    constructor() {
+        this.connect();
+    }
+
+    async connect() {
         this.client = await createClient({
-            host: 'redis',
-            port: 8001,
+            host: envConfigRedis.REDIS_HOST,
+            port: envConfigRedis.REDIS_PORT,
         })
             .on('error', err => console.log('Redis client error:', err))
             .connect()
     }
 
-    static async setValue({ key, value }) {
+    async setValues({ key, value }) {
         const isValid = await this.client.set(key, value);
         return isValid
     }
 
-    static async getValue({ key }) {
+    async getValues({ key }) {
         const keyFromRedis = await this.client.get(key);
         return keyFromRedis
     }

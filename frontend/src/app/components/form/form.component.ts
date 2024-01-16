@@ -63,7 +63,7 @@ export class FormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.tokenSubscription = this._apiToken.getToken().subscribe(data => {
-      this.idToken = data.id;
+      this.idToken = data.idToken;
       this.signUpForm.patchValue({
         token: data.token
       });

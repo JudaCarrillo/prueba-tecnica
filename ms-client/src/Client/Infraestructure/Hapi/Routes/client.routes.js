@@ -1,4 +1,4 @@
-import { ClientController } from "../controller/client.controller.js";
+import { ClientController } from "../Controllers/index.js";
 import Joi from 'joi';
 
 export const createClientRoutes = () => {

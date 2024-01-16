@@ -1,6 +1,6 @@
 import z from 'zod';
 
-const clientSchema = z.object({
+const clientScheme = z.object({
     email: z.string({
         invalid_type_error: "Email must be a string",
         required_error: "Email is required",
@@ -17,5 +17,5 @@ const clientSchema = z.object({
 })
 
 export function validateRegClient(input) {
-    return clientSchema.safeParse(input);
+    return clientScheme.safeParse(input);
 }

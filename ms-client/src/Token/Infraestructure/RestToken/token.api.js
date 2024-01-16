@@ -1,17 +1,27 @@
-export class TokenController {
-    static apiUrlGen = 'http://localhost:3000/generate'
+import { Token } from '../../Domain/index.js';
+import { endPoints } from '../Config/config.js'
 
-    // generate token 
-    static async generateToken() {
+export class APIRestToken {
+
+    apiUrlGen;
+    apiUrlVld;
+
+    constructor() {
+        this.apiUrlGen = endPoints.API_GENERATE
+        this.apiUrlVld = endPoints.API_VALIDATE
+    }
+
+    async generateToken() {
         try {
-            const response = await fetch(TokenController.apiUrlGen, {
+            const response = await fetch(this.apiUrlGen, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
 
-            const token = await response.json()
+            const tokenData = await response.json()
+            const token = new Token(tokenData.idToken, tokenData.token);
             return token
 
         } catch (err) {
@@ -19,13 +29,10 @@ export class TokenController {
         }
     }
 
-    // validate token
-    static async validateToken({ id }) {
-        const idToken = id
-        const apiUrlVld = `http://localhost:3000/validate/${idToken}`
+    async validateToken({ idToken }) {
+        const apiUrlVld = `${this.apiUrlVld}${idToken}`
 
         try {
-
             const response = await fetch(apiUrlVld, {
                 method: 'GET',
                 headers: {
@@ -38,8 +45,6 @@ export class TokenController {
         } catch (err) {
             console.error(err);
         }
-
-
     }
 
 }

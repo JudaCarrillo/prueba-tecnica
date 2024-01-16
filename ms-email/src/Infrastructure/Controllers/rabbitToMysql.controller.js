@@ -16,7 +16,7 @@ export class RabbitToMysqlController {
         const msg = new Mail(validationResult.data);
         const { recipient, subject, content } = msg;
 
-        await this.mysqlMailRepository.save({ recipient, subject, content })
+        await this.mysqlRepository.save({ recipient, subject, content })
         console.log('Correo registrado en la base de datos:', message);
     }
 

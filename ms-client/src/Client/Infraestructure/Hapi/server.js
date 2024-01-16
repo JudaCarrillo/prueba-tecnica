@@ -2,7 +2,7 @@ import Hapi from '@hapi/hapi';
 import inert from '@hapi/inert';
 import vision from '@hapi/vision';
 import hapiswagger from 'hapi-swagger';
-import { createClientRoutes } from './routes/client.routes.js';
+import { createClientRoutes } from './Routes/client.routes.js';
 
 const swaggerOptions = {
     info: {
@@ -11,8 +11,7 @@ const swaggerOptions = {
     },
 }
 
-
-const init = async () => {
+export const initServer = async () => {
     const hapi = Hapi;
     const server = hapi.Server({
         port: process.env.PORT ?? 3002,
@@ -33,7 +32,6 @@ const init = async () => {
             plugin: hapiswagger,
             options: swaggerOptions
         }
-
     ])
 
     server.route(createClientRoutes())
@@ -51,4 +49,3 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
 });
 
-init();
