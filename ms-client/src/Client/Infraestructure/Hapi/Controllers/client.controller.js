@@ -37,7 +37,6 @@ export class ClientController {
 
         // Token
         const isValid = await tokenController.validateToken({ idToken })
-        console.log(isValid);
         const isValidValue = isValid['Valid token'];
 
         if (isValidValue === false) return h.response({ message: 'Invalid token' })
