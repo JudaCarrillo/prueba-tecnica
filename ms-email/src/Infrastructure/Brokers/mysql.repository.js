@@ -28,8 +28,6 @@ export class MySQLMailRepository extends MailRepository {
     async save({ recipient, subject, content }) {
         const query = 'INSERT INTO email_sent (recipient, subject, content) VALUES (?, ?, ?)';
         const [isSent] = await this.pool.query(query, [recipient, subject, content]);
-        console.log(recipient, subject, content)
-        console.log(isSent)
         return isSent;
     }
 }

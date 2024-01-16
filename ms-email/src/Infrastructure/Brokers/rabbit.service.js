@@ -28,7 +28,6 @@ export class RabbitService {
         this.consumer = await this.amqp.connect(this.rabbitSettings);
         this.chl = await this.consumer.createChannel();
         await this.chl.assertQueue(this.queue);
-        console.log('connect')
     }
 
     async runConsumer(callback) {
@@ -43,8 +42,7 @@ export class RabbitService {
 
                 const msg = JSON.parse(message.content.toString());
                 this.chl.ack(message)
-                console.log(msg)
-                return msg
+                callback(msg)
             });
 
         } catch (error) {

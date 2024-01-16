@@ -8,19 +8,18 @@ export class RabbitToMysqlController {
         this.mysqlRepository = mysqlRepository;
     }
 
-    async proccessMessage(message) {
-        const validationResult = validateEmail(message)
+    proccessMessage = async (msg) => {
+        const validationResult = validateEmail(msg)
 
-        if (!validationResult.success) return
+        if (!validationResult.success) return validationResult.error
 
-        const msg = new Mail(validationResult.data);
-        const { recipient, subject, content } = msg;
-
-        await this.mysqlRepository.save({ recipient, subject, content })
+        const { recipient, subject, message } = validationResult.data;
+        await this.mysqlRepository.save({ recipient, subject, content: message })
         console.log('Correo registrado en la base de datos:', message);
     }
 
     async startListening() {
-        await this.rabbitService.runConsumer((message) => this.proccessMessage(message))
+        await this.rabbitService.runConsumer(this.proccessMessage)
+
     }
 }
