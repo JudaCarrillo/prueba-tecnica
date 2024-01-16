@@ -1,4 +1,4 @@
-import { validatePartialToken } from '../../../Schemes/token.js';
+import { validatePartialToken } from '../../Schemes/token.js';
 import { TokenService } from '../../../Application/token.services.js';
 
 export class TokenToMysqlController {

@@ -1,5 +1,5 @@
 import { Mail } from '../../Domain/index.js';
-import { validateEmail } from '../../Schemes/mail.js';
+import { validateEmail } from '../Schemes/mail.js';
 
 export class RabbitToMysqlController {
 
