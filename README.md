@@ -7,6 +7,9 @@
 - JavaScript
 - Rabbit MQ
 - Redis
+- Swagger
+- Docker
+- Mysql
 
 ## Initial Setup
 
